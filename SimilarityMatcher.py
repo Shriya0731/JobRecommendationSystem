@@ -12,8 +12,9 @@ class SimilarityMatcher:
         for idx, row in cluster_job_data.iterrows():
             # job_embedding = self.job_data.nlp(row['jd']).vector
             similarity = self.calculate_cosine_similarity(candidate_embedding, row['embeddings'])
-            similarities.append((row['jd'], row['Title'], row['Company'], similarity))
-        return sorted(similarities, key=lambda x: x[3], reverse=True)[:10]
+            similarity_percentage = "{:.2f}%".format(similarity * 100)
+            similarities.append([row['Title'], row['Company'], similarity_percentage])
+        return sorted(similarities, key=lambda x: x[2], reverse=True)[:10]
 
 # Usage example:
 # # Initialize SimilarityMatcher with job data

@@ -33,23 +33,23 @@ class JobRecommendationEngine:
         return top_matches
 
 # Usage example:
-job_recommendation_engine = JobRecommendationEngine('Data/data job posts.csv', 2000, ['Title','RequiredQual'])
-job_recommendation_engine.preprocess_and_cluster_data()
-job_recommendation_engine.train_similarity_matcher()
+# job_recommendation_engine = JobRecommendationEngine('Data/data job posts.csv', 2000, ['Title','RequiredQual'])
+# job_recommendation_engine.preprocess_and_cluster_data()
+# job_recommendation_engine.train_similarity_matcher()
 
-candidate_profile = """
-I am a seasoned lawyer with over 10 years of experience specializing in corporate law. My expertise lies in mergers and acquisitions, contract negotiation, and intellectual property law. I have successfully represented multinational corporations in high-stakes litigation cases and have a proven track record of delivering favorable outcomes for my clients.
-
-Throughout my career, I have demonstrated strong analytical skills, attention to detail, and the ability to navigate complex legal issues. I am highly proficient in drafting legal documents, conducting legal research, and providing strategic legal advice to clients.
-
-In addition to my legal expertise, I possess excellent communication and negotiation skills, which enable me to effectively advocate for my clients' interests. I am committed to upholding the highest ethical standards and am dedicated to achieving the best possible results for my clients.
-
-I hold a Juris Doctor (JD) degree from [Law School Name] and I am licensed to practice law in [State/Country]. I am passionate about the law and am continuously seeking opportunities for professional growth and development in the legal field.
-"""
-top_matches = job_recommendation_engine.get_similar_jobs(candidate_profile)
-for desc, title,company, sim in top_matches:
-
-    print(f"Job Title: {title}")
-    print(f"Company: {company}")
-    #print(f"Job Description: {desc}")
-    print(f"Cosine Similarity: {sim}\n")
+# candidate_profile = """
+# I am a seasoned lawyer with over 10 years of experience specializing in corporate law. My expertise lies in mergers and acquisitions, contract negotiation, and intellectual property law. I have successfully represented multinational corporations in high-stakes litigation cases and have a proven track record of delivering favorable outcomes for my clients.
+#
+# Throughout my career, I have demonstrated strong analytical skills, attention to detail, and the ability to navigate complex legal issues. I am highly proficient in drafting legal documents, conducting legal research, and providing strategic legal advice to clients.
+#
+# In addition to my legal expertise, I possess excellent communication and negotiation skills, which enable me to effectively advocate for my clients' interests. I am committed to upholding the highest ethical standards and am dedicated to achieving the best possible results for my clients.
+#
+# I hold a Juris Doctor (JD) degree from [Law School Name] and I am licensed to practice law in [State/Country]. I am passionate about the law and am continuously seeking opportunities for professional growth and development in the legal field.
+# """
+# top_matches = job_recommendation_engine.get_similar_jobs(candidate_profile)
+# for desc, title,company, sim in top_matches:
+#
+#     print(f"Job Title: {title}")
+#     print(f"Company: {company}")
+#     #print(f"Job Description: {desc}")
+#     print(f"Cosine Similarity: {sim}\n")
