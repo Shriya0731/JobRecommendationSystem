@@ -1,7 +1,7 @@
 from sklearn.cluster import KMeans
 def perform_clustering(job_embeddings):
     num_clusters = 3  # You can choose the number of clusters
-    kmeans = KMeans(n_clusters=num_clusters, random_state=42)
+    kmeans = KMeans(n_clusters=num_clusters, random_state=42,n_init=10)
     kmeans.fit(job_embeddings)
     return kmeans
 
