@@ -5,11 +5,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import csv
-from gensim.models import Word2Vec
 
-
-# Download NLTK resources
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 nltk.download('punkt')
 nltk.download('wordnet')

@@ -23,10 +23,7 @@ from nltk.corpus import stopwords
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from scipy.sparse import hstack
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn import metrics
+
 
 def cleanprofilesdataset():
     #resumeDataSet = pd.read_csv('skills.csv', encoding='utf-8')

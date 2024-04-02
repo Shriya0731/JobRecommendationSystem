@@ -1,24 +1,78 @@
 import PyPDF2
 import spacy
 import nltk
+import re
+import fitz  # PyMuPDF
+from collections import OrderedDict
+
+from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 
 from transformers import T5ForConditionalGeneration, T5Tokenizer
+
+def extract_text_from_pdf2(pdf_file_path):
+    text = ""
+    # Open the PDF file
+    with fitz.open(pdf_file_path) as pdf_document:
+        # Iterate through each page
+        for page_number in range(len(pdf_document)):
+            # Get the page
+            page = pdf_document.load_page(page_number)
+            # Extract text from the page
+            page_text = page.get_text()
+            # Append the extracted text to the result
+            text += page_text + "\n"  # Add a newline between pages if needed
+
+    return text
+def preprocess_text(text):
+    nlp = spacy.load("en_core_web_sm")
+    phone_regex = r'\b(?:\d[ -.]*){9,}\b'
+    email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    url_regex = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+
+    # Compile the regular expressions
+    phone_pattern = re.compile(phone_regex)
+    email_pattern = re.compile(email_regex)
+    url_pattern = re.compile(url_regex)
+
+    doc = nlp(text)
+    cleaned_text = []
+    for token in doc:
+        if not phone_pattern.match(token.text) and not email_pattern.match(token.text) and not url_pattern.match(token.text) and  not  token.ent_type_ in [ "GPE"]:
+            cleaned_text.append(token.text)
+        else:
+            print(token)
+    return " ".join(cleaned_text)
+
 def generate_abstractive_summary(text):
     # Load the pre-trained T5 model and tokenizer
     model = T5ForConditionalGeneration.from_pretrained("t5-small")
     tokenizer = T5Tokenizer.from_pretrained("t5-small")
 
     # Tokenize the input text
-    inputs = tokenizer.encode("summarize skills of candidate:  " + text, return_tensors="pt", max_length=512, truncation=True)
+    text = preprocess_text(text)
+    inputs = tokenizer.encode("Resume:  " + text, return_tensors="pt", max_length=512, truncation=True)
 
     # Generate the summary
     summary_ids = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
 
     # Decode the summary tokens and return the summary
     summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    return summary
+    summary_sentences = summary.split(". ")
+    unique_sentences = list(OrderedDict.fromkeys(summary_sentences))  # Remove duplicates while preserving order
+    filtered_summary = ". ".join(unique_sentences)
+    return filtered_summary
 
+def remove_duplicates(text):
+    # Split the text into sentences
+    sentences = text.split(". ")
 
+    # Remove duplicates while preserving the order
+    unique_sentences = list(OrderedDict.fromkeys(sentences))
+
+    # Join the unique sentences into a single string
+    unique_text = ". ".join(unique_sentences)
+
+    return unique_text
 def extract_text_from_pdf(pdf_file_path):
     text = ""
     with open(pdf_file_path, 'rb') as pdf_file:
@@ -68,7 +122,7 @@ def parse_resume(pdf_file_path):
     # print('Work Experience:')
     # print(experience.strip())
     # return profile.strip()
-    resume = extract_text_from_pdf(pdf_file_path)
+    resume = extract_text_from_pdf2(pdf_file_path)
     summarized_resume = generate_abstractive_summary(resume)
     return summarized_resume
 
@@ -82,3 +136,23 @@ def parse_resume(pdf_file_path):
 # summary = generate_abstractive_summary(text)
 # print("Abstractive Summary:")
 # print(summary)
+def generate_summary_2(input_text):
+    # Load the Pegasus model and tokenizer
+    model_name = "google/pegasus-large"
+    tokenizer = PegasusTokenizer.from_pretrained(model_name)
+    model = PegasusForConditionalGeneration.from_pretrained(model_name)
+
+    # Define the input text
+
+    # Tokenize the input text
+    inputs = tokenizer([input_text], max_length=1024, return_tensors="pt", truncation=True)
+
+    # Generate the summary
+    summary_ids = model.generate(inputs["input_ids"], num_beams=4, min_length=30, max_length=150, early_stopping=True)
+
+    # Decode the summary
+    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+
+    # Print the generated summary
+    print("Generated Summary:")
+    return (summary)

@@ -24,7 +24,7 @@ def start():
 def addresume():
     return render_template("add_resume.html")
 
-@app.route('/addjd')
+@app.route('/add_jd')
 def addjd():
     return render_template("add_jd.html")
 
